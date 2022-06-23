@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <div id="root"></div>
+</body>
+<script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/prop-types@15.7.2/prop-types.js"></script>
+<script type="text/babel">
+    const root = document.getElementById("root");
+    function Btn({ text, changeValue, fontSize = 24 }) {//fontsize 기본값
+        console.log("rerender")
+        return <button
+            onClick={changeValue}
+            style={{
+                backgroundColor: "tomato",
+                color: "white",
+                padding: "10px 20px",
+                border: 0,
+                borderRadius: 10,
+                fontSize :  fontSize,
+            }}>{text}</button>
+    }
+    
+    const MemorizedBtn = React.memo(Btn)//부모가 다시그릴것이 생기면 전부 리렌딩 하지만 memo를 사용하면 필요한 부분만 re-rend
+    MemorizedBtn.propTypes = {//propType으로 props형식 지정해주기(안그러면 잘못된 코드를 넣어도 구문오류 안남)
+        text: PropTypes.string.isRequired,//무조건 요청 isRequired
+        fontSize: PropTypes.number
+    }
+    function App() {
+        const [value, setValue] = React.useState("Save Changes")
+        const changeValue = () => setValue("Revert Changes")
+        const [index, setIndex] = React.useState("xx")
+        const onSelect = (event) => {
+            setIndex(event.target.value)
+        }
+        return (
+            <div>
+                <MemorizedBtn text={value} changeValue={changeValue} fontSize={10}/>
+                <Btn text="Continue" />
+            </div>
+        );
+    }
+    ReactDOM.render(<App />, root);
+</script>
+
+</html>
